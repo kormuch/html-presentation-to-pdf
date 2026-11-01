@@ -1,56 +1,66 @@
 # HTML Presentation to PDF
 
-HTML Presentation Builder — konvertiert HTML-Slide-Decks zu Vektor-PDF mit selektierbarem Text, Sidebar-Navigation und Seitenzahlen.
+Converts HTML slide decks to vector PDF with selectable text, sidebar navigation, and page numbers. Renders each slide in a headless browser via Playwright, then stitches the pages into a single PDF using pdf-lib.
 
-## Anforderungen
+## Requirements
 
 - Node.js
-- Dependencies: `npm install` (playwright, pdf-lib)
-- Playwright-Browser: `npx playwright install chromium` (einmalig)
+- Dependencies: `npm install` (installs playwright and pdf-lib)
+- Chromium (one-time): `npx playwright install chromium`
 
-## PDF bauen
+## Usage
 
 ```bash
 # Windows
-build_pdf.bat meine_praesentation.html
+build_pdf.bat presentation.html
 
-# Oder direkt
-node build_pdf.mjs meine_praesentation.html
-node build_pdf.mjs meine_praesentation.html custom_output.pdf
+# Direct
+node build_pdf.mjs presentation.html
+node build_pdf.mjs presentation.html custom_output.pdf
 ```
 
-## Neue Präsentation erstellen
+Output defaults to `<input_name>.pdf` in the same directory.
 
-1. `example_churn_netflix.html` kopieren und umbenennen
-2. Slides anpassen (jeder `<div class="slide" data-slide="N" data-chapter="X">` ist eine Folie)
-3. `TOTAL` und `chapters`-Array im `<script>`-Block aktualisieren
-4. `build_pdf.bat neue_praesentation.html` ausführen
+## Creating a Presentation
 
-## Slide-Struktur
+1. Copy `example_churn_netflix.html` and rename it
+2. Edit the slides (each `<div class="slide" data-slide="N" data-chapter="X">` is one page)
+3. Update `TOTAL` and the `chapters` array in the `<script>` block
+4. Run the build command
+
+## Slide Structure
 
 ```html
 <div class="slide" data-slide="1" data-chapter="0">
-  <div class="slide-chapter">Kapitelname</div>
-  <div class="slide-title">Folientitel</div>
-  <!-- Inhalt -->
+  <div class="slide-chapter">Chapter Name</div>
+  <div class="slide-title">Slide Title</div>
+  <!-- content -->
 </div>
 ```
 
-## Kapitel-Navigation (Sidebar)
+## Chapter Navigation (Sidebar)
+
+The sidebar is defined in the `<script>` block and rendered into the PDF as a clickable table of contents:
 
 ```javascript
 const TOTAL = 20;
 const chapters = [
   { id: 0, label: '',       name: 'Opening',    slides: [1, 2] },
-  { id: 1, label: 'Part 1', name: 'Thema',      slides: [3, 4, 5] },
+  { id: 1, label: 'Part 1', name: 'Topic',      slides: [3, 4, 5] },
   // ...
 ];
 ```
 
-## Viewport / PDF-Größe
+## Viewport / PDF Size
 
-Default: 1440x810px. Änderbar in `build_pdf.mjs` (Zeilen WIDTH/HEIGHT).
+Default: 1440x810px (16:9). Adjustable via `WIDTH` and `HEIGHT` constants in `build_pdf.mjs`.
 
-## Beispiel
+## Tech Stack
 
-`example_churn_netflix.html` — Customer Churn Prediction bei Netflix (20 Slides, Note 1.0).
+- **Node.js** -- runtime
+- **Playwright** -- headless Chromium rendering
+- **pdf-lib** -- PDF stitching, page numbers, sidebar navigation
+
+## Example
+
+`example_churn_netflix.html` -- a 20-slide Customer Churn Prediction presentation.
